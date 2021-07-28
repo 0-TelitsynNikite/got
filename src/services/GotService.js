@@ -1,4 +1,4 @@
-class GotService {
+export default class GotService {
     constructor() {
         this._apiBase = 'https://www.anapioficeandfire.com/api'
     }
@@ -13,28 +13,91 @@ class GotService {
         return  await res.json();
     }
 
-    getAllCharacters() {
-        return this.getResource(`/characters?page=5&pageSize=10`);
+    async getAllCharacters() {
+        const res = await this.getResource(`/characters?page=5&pageSize=10`);
+        return res.map(this._transformCharacter)
     }
 
-    getCharacter(id) {
-        return this.getResource(`/characters/${id}`);
+    async getCharacter(id) {
+        const character = await this.getResource(`/characters/${id}`);
+        return this._transformCharacter(character)
     }
 
-    getAllBooks() {
-        return this.getResource(`/books/`);
+    async getAllBooks() {
+        const books = await this.getResource(`/books/`);
+        return books.map(this._transformCharacter)
     }
 
-    getBook(id) {
-        return this.getResource(`/books/${id}/`);
+    async getBook(id) {
+        const book = await this.getResource(`/books/${id}/`);
+        return this._transformCharacter(book);
     }
 
-    getAllHouses() {
-        return this.getResource(`/houses/`);
+    async getAllHouses() {
+        const houses = await this.getResource(`/houses/`);
+        return houses.map(this._transformCharacter);
     }
 
-    getHouse(id) {
-        return this.getResource(`/houses/${id}/`);
+    async getHouse(id) {
+        const house = await this.getResource(`/houses/${id}/`);
+        return this._transformCharacter(house)
+    }
+
+    _transformCharacter(char) {
+
+        for(let key in char) {
+
+            if (!char[key]) {
+                char[key] = `have no data`
+            }
+
+        }
+
+        return {
+            name: char.name,
+            gender: char.gender,
+            born: char.born,
+            died: char.died,
+            culture: char.culture
+        }
+    }
+
+    _transformHouse(house) {
+
+        for(let key in house) {
+
+            if (!house[key]) {
+                house[key] = `have no data`
+            }
+            
+        }
+
+        return {
+            name: house.name,
+            region: house.region,
+            words: house.words,
+            titles: house.titles,
+            overlord: house.overlord,
+            ancestralWeapons: house.ancestralWeapons
+        }
+    }
+
+    _transformBook(book) {
+
+        for(let key in book) {
+
+            if (!book[key]) {
+                book[key] = `have no data`
+            }
+            
+        }
+        
+        return {
+            name: book.name,
+            numberOfPages: book.numberOfPages,
+            publiser: book.publiser,
+            released: book.released
+        }
     }
 }
 
