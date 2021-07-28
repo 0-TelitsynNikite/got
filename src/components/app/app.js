@@ -4,31 +4,57 @@ import Header from '../header';
 import RandomChar from '../randomChar';
 import ItemList from '../itemList';
 import CharDetails from '../charDetails';
+import ErrorMessage from '../errorMessage';
 
 
-const App = () => {
-    return (
-        <>
-            <Container>
-                <Header />
-            </Container>
-            <Container>
-                <Row>
-                    <Col lg={{size: 5, offset: 0}}>
-                        <RandomChar/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md='6'>
-                        <ItemList />
-                    </Col>
-                    <Col md='6'>
-                        <CharDetails />
-                    </Col>
-                </Row>
-            </Container>
-        </>
-    );
+export default class App extends React.Component {
+
+    state = {
+        toggle: false,
+        error: false
+    }
+
+    onRandom = () => {
+        this.setState(state => {
+            return {
+                toggle: !state.toggle
+            }
+        })
+    }
+
+    render() {
+
+        if (this.state.error) {
+            return <ErrorMessage />
+        }
+        
+        const char = !this.state.toggle ? <RandomChar/> : null;
+        return (
+            <>
+                <Container>
+                    <Header />
+                </Container>
+                <Container>
+                    <Row>
+                        <Col lg={{size: 5, offset: 0}}>
+                        {char}
+                        </Col>                        
+                    </Row> 
+                    <ToggleBtn onRandom={this.onRandom}/>                  
+                    <Row>
+                        <Col md='6'>
+                            <ItemList />
+                        </Col>
+                        <Col md='6'>
+                            <CharDetails />
+                        </Col>
+                    </Row>
+                </Container>
+            </>
+        );
+    }
 };
 
-export default App;
+const ToggleBtn = ({onRandom}) => {
+    return <button onClick={onRandom}>Toggle random character</button>;
+}
